@@ -15,7 +15,7 @@ pathspec==1.1.1
 pluggy==1.6.0
 pycparser==3.0
 Pygments==2.21.0
-pytest==9.0.2
+pytest==9.1.1
 PyYAML==6.0.3
 referencing==0.37.0
 resolvelib==1.2.1
