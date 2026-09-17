@@ -1,6 +1,6 @@
 # Dependency resolution recorded 2026-09-17 for Python 3.12.
 # Exact versions; this is not a hash-locked artifact manifest.
-ansible-core==2.20.9
+ansible-core==2.21.4
 attrs==26.1.0
 cffi==2.1.1
 colorama==0.4.6
