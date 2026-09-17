@@ -1,0 +1,50 @@
+---
+- name: Validate, protect and reconcile ACI intent
+  hosts: apic
+  connection: local
+  gather_facts: false
+  any_errors_fatal: true
+  check_mode: '{{ ansible_check_mode or not (aci_apply | default(false) | bool) }}'
+  module_defaults:
+    group/cisco.aci.all:
+      host: '{{ aci_host }}'
+      username: '{{ lookup(''ansible.builtin.env'', ''ACI_USERNAME'') }}'
+      password: '{{ lookup(''ansible.builtin.env'', ''ACI_PASSWORD'') | default(omit, true) }}'
+      private_key: '{{ lookup(''ansible.builtin.env'', ''ACI_PRIVATE_KEY'') | default(omit, true) }}'
+      certificate_name: '{{ lookup(''ansible.builtin.env'', ''ACI_CERTIFICATE_NAME'') | default(omit,
+        true) }}'
+      validate_certs: true
+      use_ssl: true
+      use_proxy: false
+      timeout: 60
+      output_level: info
+      suppress_previous: false
+      suppress_verification: false
+  pre_tasks:
+    - name: Run mandatory preflight
+      ansible.builtin.import_tasks: tasks/preflight.yml
+      tags:
+        - always
+    - name: Capture configuration before deployment
+      ansible.builtin.import_tasks: tasks/snapshot.yml
+      when: (aci_apply | default(false) | bool) and not ansible_check_mode
+  roles:
+    - aci_tenants
+    - aci_access
+    - aci_network
+    - aci_contracts
+    - aci_l3out
+    - aci_bindings
+  post_tasks:
+    - name: Inspect faults for managed tenants
+      ansible.builtin.import_tasks: tasks/faults.yml
+      when: aci_verify | default(false) | bool
+    - name: Mark the run completed
+      ansible.builtin.copy:
+        content: 'Completed successfully. Check report.json for changes; this does not certify data-plane
+          health.
+
+          '
+        dest: '{{ aci_run_dir.path }}/COMPLETED'
+        mode: '0600'
+      check_mode: false

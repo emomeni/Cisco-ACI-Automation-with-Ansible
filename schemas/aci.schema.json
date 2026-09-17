@@ -1,0 +1,1667 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ACI managed intent v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "target",
+    "tenants"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "environment",
+        "apic_host",
+        "apic_versions"
+      ],
+      "properties": {
+        "environment": {
+          "enum": [
+            "lab",
+            "production"
+          ]
+        },
+        "apic_host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9.-]+$"
+        },
+        "apic_versions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 3
+          }
+        }
+      }
+    },
+    "tenants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "vlan_pools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pool",
+          "pool_allocation_mode"
+        ],
+        "properties": {
+          "pool": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pool_allocation_mode": {
+            "const": "static"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "vlan_blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pool",
+          "pool_allocation_mode",
+          "block_start",
+          "block_end"
+        ],
+        "properties": {
+          "pool": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pool_allocation_mode": {
+            "const": "static"
+          },
+          "block_start": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4094
+          },
+          "block_end": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4094
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "domain",
+          "domain_type"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "domain_type": {
+            "enum": [
+              "phys",
+              "l3dom"
+            ]
+          }
+        }
+      }
+    },
+    "domain_pools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "domain",
+          "domain_type",
+          "pool",
+          "pool_allocation_mode"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "domain_type": {
+            "enum": [
+              "phys",
+              "l3dom"
+            ]
+          },
+          "pool": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pool_allocation_mode": {
+            "const": "static"
+          }
+        }
+      }
+    },
+    "aeps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "aep"
+        ],
+        "properties": {
+          "aep": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "aep_domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "aep",
+          "domain",
+          "domain_type"
+        ],
+        "properties": {
+          "aep": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "domain_type": {
+            "enum": [
+              "phys",
+              "l3dom"
+            ]
+          }
+        }
+      }
+    },
+    "lldp_policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lldp_policy",
+          "receive_state",
+          "transmit_state"
+        ],
+        "properties": {
+          "lldp_policy": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "receive_state": {
+            "type": "boolean"
+          },
+          "transmit_state": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "cdp_policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cdp_policy",
+          "admin_state"
+        ],
+        "properties": {
+          "cdp_policy": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "admin_state": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "link_policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "link_level_policy",
+          "speed",
+          "auto_negotiation"
+        ],
+        "properties": {
+          "link_level_policy": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "speed": {
+            "type": "string",
+            "enum": [
+              "100M",
+              "1G",
+              "10G",
+              "25G",
+              "40G",
+              "50G",
+              "100G",
+              "200G",
+              "400G",
+              "auto",
+              "inherit"
+            ],
+            "minLength": 1
+          },
+          "auto_negotiation": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "access_policy_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "policy_group",
+          "lag_type",
+          "aep",
+          "link_level_policy",
+          "lldp_policy",
+          "cdp_policy"
+        ],
+        "properties": {
+          "policy_group": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "lag_type": {
+            "const": "leaf"
+          },
+          "aep": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "link_level_policy": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "lldp_policy": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "cdp_policy": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "interface_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "interface_profile"
+        ],
+        "properties": {
+          "interface_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "access_ports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "interface_profile",
+          "access_port_selector",
+          "policy_group",
+          "interface_type",
+          "port_blk",
+          "from_card",
+          "to_card",
+          "from_port",
+          "to_port"
+        ],
+        "properties": {
+          "interface_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "access_port_selector": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "policy_group": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "interface_type": {
+            "const": "switch_port"
+          },
+          "port_blk": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "from_card": {
+            "const": "1"
+          },
+          "to_card": {
+            "const": "1"
+          },
+          "from_port": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,2}$"
+          },
+          "to_port": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,2}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "leaf_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "leaf_profile"
+        ],
+        "properties": {
+          "leaf_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "leaf_selectors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "leaf_profile",
+          "leaf",
+          "leaf_node_blk",
+          "from",
+          "to"
+        ],
+        "properties": {
+          "leaf_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "leaf": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "leaf_node_blk": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "from": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4000
+          },
+          "to": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4000
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "leaf_interfaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "leaf_profile",
+          "interface_selector"
+        ],
+        "properties": {
+          "leaf_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "interface_selector": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          }
+        }
+      }
+    },
+    "vrfs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "vrf",
+          "policy_control_preference",
+          "policy_control_direction"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "vrf": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "policy_control_preference": {
+            "const": "enforced"
+          },
+          "policy_control_direction": {
+            "const": "ingress"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "bridge_domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "bd",
+          "vrf",
+          "enable_routing",
+          "arp_flooding",
+          "l2_unknown_unicast",
+          "limit_ip_learn"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "bd": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "vrf": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "enable_routing": {
+            "type": "boolean"
+          },
+          "arp_flooding": {
+            "type": "boolean"
+          },
+          "l2_unknown_unicast": {
+            "type": "string",
+            "enum": [
+              "proxy",
+              "flood"
+            ],
+            "minLength": 1
+          },
+          "limit_ip_learn": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "ip_learning": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "subnets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "bd",
+          "gateway",
+          "mask",
+          "scope"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "bd": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "gateway": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mask": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32
+          },
+          "scope": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "private",
+                "public"
+              ]
+            }
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "preferred": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "applications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "ap"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "ap": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "epgs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "ap",
+          "epg",
+          "bd",
+          "intra_epg_isolation",
+          "preferred_group"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "ap": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "epg": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "bd": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "intra_epg_isolation": {
+            "type": "string",
+            "enum": [
+              "enforced",
+              "unenforced"
+            ],
+            "minLength": 1
+          },
+          "preferred_group": {
+            "const": false
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "filters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "filter"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "filter": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "filter_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "filter",
+          "entry",
+          "ether_type",
+          "ip_protocol",
+          "destination_port_start",
+          "destination_port_end"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "filter": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "entry": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "ether_type": {
+            "const": "ip"
+          },
+          "ip_protocol": {
+            "enum": [
+              "tcp",
+              "udp"
+            ]
+          },
+          "destination_port_start": {
+            "type": "string",
+            "pattern": "^\\d{1,5}$"
+          },
+          "destination_port_end": {
+            "type": "string",
+            "pattern": "^\\d{1,5}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "stateful": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "contract",
+          "scope"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "scope": {
+            "const": "context"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "subjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "contract",
+          "subject",
+          "apply_both_direction",
+          "reverse_filter"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "apply_both_direction": {
+            "const": "both"
+          },
+          "reverse_filter": {
+            "const": true
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "subject_filters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "contract",
+          "subject",
+          "filter",
+          "direction",
+          "action"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "filter": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "direction": {
+            "const": "both"
+          },
+          "action": {
+            "const": "permit"
+          }
+        }
+      }
+    },
+    "epg_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "ap",
+          "epg",
+          "contract",
+          "contract_type"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "ap": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "epg": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "contract_type": {
+            "enum": [
+              "consumer",
+              "provider"
+            ]
+          }
+        }
+      }
+    },
+    "l3outs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "vrf",
+          "domain",
+          "l3protocol",
+          "route_control"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "vrf": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3protocol": {
+            "const": [
+              "static"
+            ]
+          },
+          "route_control": {
+            "const": [
+              "export"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "l3out_node_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "node_profile"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "node_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "l3out_nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "node_profile",
+          "pod_id",
+          "node_id",
+          "router_id",
+          "router_id_as_loopback"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "node_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pod_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 255
+          },
+          "node_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4000
+          },
+          "router_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "router_id_as_loopback": {
+            "const": "no"
+          }
+        }
+      }
+    },
+    "l3out_interface_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "node_profile",
+          "interface_profile"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "node_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "interface_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "l3out_interfaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "node_profile",
+          "interface_profile",
+          "pod_id",
+          "node_id",
+          "path_ep",
+          "address",
+          "interface_type",
+          "mtu"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "node_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "interface_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pod_id": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,2}$"
+          },
+          "node_id": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,3}$"
+          },
+          "path_ep": {
+            "type": "string",
+            "pattern": "^eth1/[1-9]\\d{0,2}$"
+          },
+          "address": {
+            "type": "string",
+            "minLength": 1
+          },
+          "interface_type": {
+            "const": "l3-port"
+          },
+          "mtu": {
+            "type": "string",
+            "pattern": "^\\d{3,4}$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "static_routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "logical_node",
+          "pod_id",
+          "node_id",
+          "prefix",
+          "preference"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "logical_node": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pod_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 255
+          },
+          "node_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4000
+          },
+          "prefix": {
+            "type": "string",
+            "minLength": 1
+          },
+          "preference": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "static_nexthops": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "node_profile",
+          "pod_id",
+          "node_id",
+          "prefix",
+          "nexthop",
+          "preference"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "node_profile": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pod_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 255
+          },
+          "node_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4000
+          },
+          "prefix": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nexthop": {
+            "type": "string",
+            "minLength": 1
+          },
+          "preference": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 255
+          }
+        }
+      }
+    },
+    "external_epgs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "extepg",
+          "preferred_group"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "extepg": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "preferred_group": {
+            "const": false
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "external_subnets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "extepg",
+          "network",
+          "scope"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "extepg": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "network": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "const": [
+              "import-security"
+            ]
+          }
+        }
+      }
+    },
+    "external_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "l3out",
+          "extepg",
+          "contract",
+          "contract_type"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "extepg": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "contract_type": {
+            "enum": [
+              "consumer",
+              "provider"
+            ]
+          }
+        }
+      }
+    },
+    "bd_l3outs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "bd",
+          "l3out"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "bd": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "l3out": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          }
+        }
+      }
+    },
+    "epg_domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "ap",
+          "epg",
+          "domain",
+          "domain_type",
+          "deploy_immediacy",
+          "resolution_immediacy"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "ap": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "epg": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "domain_type": {
+            "const": "phys"
+          },
+          "deploy_immediacy": {
+            "type": "string",
+            "enum": [
+              "immediate",
+              "lazy"
+            ],
+            "minLength": 1
+          },
+          "resolution_immediacy": {
+            "type": "string",
+            "enum": [
+              "immediate",
+              "lazy",
+              "pre-provision"
+            ],
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "static_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tenant",
+          "ap",
+          "epg",
+          "pod_id",
+          "leafs",
+          "interface",
+          "interface_type",
+          "encap_id",
+          "interface_mode",
+          "deploy_immediacy"
+        ],
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "ap": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "epg": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "pod_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 255
+          },
+          "leafs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[1-9]\\d{0,3}$"
+            }
+          },
+          "interface": {
+            "type": "string",
+            "pattern": "^1/[1-9]\\d{0,2}$"
+          },
+          "interface_type": {
+            "const": "switch_port"
+          },
+          "encap_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4094
+          },
+          "interface_mode": {
+            "type": "string",
+            "enum": [
+              "802.1p",
+              "access",
+              "native",
+              "regular",
+              "tagged",
+              "trunk",
+              "untagged"
+            ],
+            "minLength": 1
+          },
+          "deploy_immediacy": {
+            "type": "string",
+            "enum": [
+              "immediate",
+              "lazy"
+            ],
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    }
+  }
+}

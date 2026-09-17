@@ -1,0 +1,21 @@
+---
+- name: Ensure tenants
+  cisco.aci.aci_tenant:
+    tenant: '{{ item[''tenant''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.tenants | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record tenants results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: tenants
+- name: Assert no drift in tenants
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in tenants; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool

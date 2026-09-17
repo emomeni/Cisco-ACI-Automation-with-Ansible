@@ -1,0 +1,267 @@
+---
+- name: Ensure l3outs
+  cisco.aci.aci_l3out:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    vrf: '{{ item[''vrf''] }}'
+    domain: '{{ item[''domain''] }}'
+    l3protocol: '{{ item[''l3protocol''] }}'
+    route_control: '{{ item[''route_control''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.l3outs | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record l3outs results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: l3outs
+- name: Assert no drift in l3outs
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in l3outs; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure l3out node profiles
+  cisco.aci.aci_l3out_logical_node_profile:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    node_profile: '{{ item[''node_profile''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.l3out_node_profiles | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record l3out_node_profiles results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: l3out_node_profiles
+- name: Assert no drift in l3out node profiles
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in l3out_node_profiles; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure l3out nodes
+  cisco.aci.aci_l3out_logical_node:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    node_profile: '{{ item[''node_profile''] }}'
+    pod_id: '{{ item[''pod_id''] }}'
+    node_id: '{{ item[''node_id''] }}'
+    router_id: '{{ item[''router_id''] }}'
+    router_id_as_loopback: '{{ item[''router_id_as_loopback''] }}'
+    state: present
+  loop: '{{ aci_model.l3out_nodes | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record l3out_nodes results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: l3out_nodes
+- name: Assert no drift in l3out nodes
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in l3out_nodes; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure l3out interface profiles
+  cisco.aci.aci_l3out_logical_interface_profile:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    node_profile: '{{ item[''node_profile''] }}'
+    interface_profile: '{{ item[''interface_profile''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.l3out_interface_profiles | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record l3out_interface_profiles results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: l3out_interface_profiles
+- name: Assert no drift in l3out interface profiles
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in l3out_interface_profiles; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure l3out interfaces
+  cisco.aci.aci_l3out_interface:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    node_profile: '{{ item[''node_profile''] }}'
+    interface_profile: '{{ item[''interface_profile''] }}'
+    pod_id: '{{ item[''pod_id''] }}'
+    node_id: '{{ item[''node_id''] }}'
+    path_ep: '{{ item[''path_ep''] }}'
+    address: '{{ item[''address''] }}'
+    interface_type: '{{ item[''interface_type''] }}'
+    mtu: '{{ item[''mtu''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.l3out_interfaces | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record l3out_interfaces results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: l3out_interfaces
+- name: Assert no drift in l3out interfaces
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in l3out_interfaces; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure static routes
+  cisco.aci.aci_l3out_static_routes:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    logical_node: '{{ item[''logical_node''] }}'
+    pod_id: '{{ item[''pod_id''] }}'
+    node_id: '{{ item[''node_id''] }}'
+    prefix: '{{ item[''prefix''] }}'
+    preference: '{{ item[''preference''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.static_routes | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record static_routes results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: static_routes
+- name: Assert no drift in static routes
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in static_routes; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure static nexthops
+  cisco.aci.aci_l3out_static_routes_nexthop:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    node_profile: '{{ item[''node_profile''] }}'
+    pod_id: '{{ item[''pod_id''] }}'
+    node_id: '{{ item[''node_id''] }}'
+    prefix: '{{ item[''prefix''] }}'
+    nexthop: '{{ item[''nexthop''] }}'
+    preference: '{{ item[''preference''] }}'
+    state: present
+  loop: '{{ aci_model.static_nexthops | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record static_nexthops results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: static_nexthops
+- name: Assert no drift in static nexthops
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in static_nexthops; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure external epgs
+  cisco.aci.aci_l3out_extepg:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    extepg: '{{ item[''extepg''] }}'
+    preferred_group: '{{ item[''preferred_group''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.external_epgs | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record external_epgs results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: external_epgs
+- name: Assert no drift in external epgs
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in external_epgs; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure external subnets
+  cisco.aci.aci_l3out_extsubnet:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    extepg: '{{ item[''extepg''] }}'
+    network: '{{ item[''network''] }}'
+    scope: '{{ item[''scope''] }}'
+    state: present
+  loop: '{{ aci_model.external_subnets | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record external_subnets results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: external_subnets
+- name: Assert no drift in external subnets
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in external_subnets; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure external contracts
+  cisco.aci.aci_l3out_extepg_to_contract:
+    tenant: '{{ item[''tenant''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    extepg: '{{ item[''extepg''] }}'
+    contract: '{{ item[''contract''] }}'
+    contract_type: '{{ item[''contract_type''] }}'
+    state: present
+  loop: '{{ aci_model.external_contracts | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record external_contracts results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: external_contracts
+- name: Assert no drift in external contracts
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in external_contracts; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure bd l3outs
+  cisco.aci.aci_bd_to_l3out:
+    tenant: '{{ item[''tenant''] }}'
+    bd: '{{ item[''bd''] }}'
+    l3out: '{{ item[''l3out''] }}'
+    state: present
+  loop: '{{ aci_model.bd_l3outs | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record bd_l3outs results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: bd_l3outs
+- name: Assert no drift in bd l3outs
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in bd_l3outs; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool

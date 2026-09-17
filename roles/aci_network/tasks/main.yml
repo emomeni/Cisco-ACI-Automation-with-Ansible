@@ -1,0 +1,122 @@
+---
+- name: Ensure vrfs
+  cisco.aci.aci_vrf:
+    tenant: '{{ item[''tenant''] }}'
+    vrf: '{{ item[''vrf''] }}'
+    policy_control_preference: '{{ item[''policy_control_preference''] }}'
+    policy_control_direction: '{{ item[''policy_control_direction''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.vrfs | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record vrfs results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: vrfs
+- name: Assert no drift in vrfs
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in vrfs; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure bridge domains
+  cisco.aci.aci_bd:
+    tenant: '{{ item[''tenant''] }}'
+    bd: '{{ item[''bd''] }}'
+    vrf: '{{ item[''vrf''] }}'
+    enable_routing: '{{ item[''enable_routing''] }}'
+    arp_flooding: '{{ item[''arp_flooding''] }}'
+    l2_unknown_unicast: '{{ item[''l2_unknown_unicast''] }}'
+    limit_ip_learn: '{{ item[''limit_ip_learn''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    ip_learning: '{{ item[''ip_learning''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.bridge_domains | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record bridge_domains results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: bridge_domains
+- name: Assert no drift in bridge domains
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in bridge_domains; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure subnets
+  cisco.aci.aci_bd_subnet:
+    tenant: '{{ item[''tenant''] }}'
+    bd: '{{ item[''bd''] }}'
+    gateway: '{{ item[''gateway''] }}'
+    mask: '{{ item[''mask''] }}'
+    scope: '{{ item[''scope''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    preferred: '{{ item[''preferred''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.subnets | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record subnets results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: subnets
+- name: Assert no drift in subnets
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in subnets; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure applications
+  cisco.aci.aci_ap:
+    tenant: '{{ item[''tenant''] }}'
+    ap: '{{ item[''ap''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.applications | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record applications results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: applications
+- name: Assert no drift in applications
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in applications; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure epgs
+  cisco.aci.aci_epg:
+    tenant: '{{ item[''tenant''] }}'
+    ap: '{{ item[''ap''] }}'
+    epg: '{{ item[''epg''] }}'
+    bd: '{{ item[''bd''] }}'
+    intra_epg_isolation: '{{ item[''intra_epg_isolation''] }}'
+    preferred_group: '{{ item[''preferred_group''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.epgs | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record epgs results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: epgs
+- name: Assert no drift in epgs
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in epgs; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool

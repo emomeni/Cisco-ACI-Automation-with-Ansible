@@ -1,0 +1,330 @@
+---
+- name: Ensure vlan pools
+  cisco.aci.aci_vlan_pool:
+    pool: '{{ item[''pool''] }}'
+    pool_allocation_mode: '{{ item[''pool_allocation_mode''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.vlan_pools | default([]) }}'
+  loop_control:
+    label: '{{ item[''pool''] }}'
+  register: aci_step
+  no_log: true
+- name: Record vlan_pools results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: vlan_pools
+- name: Assert no drift in vlan pools
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in vlan_pools; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure vlan blocks
+  cisco.aci.aci_vlan_pool_encap_block:
+    pool: '{{ item[''pool''] }}'
+    pool_allocation_mode: '{{ item[''pool_allocation_mode''] }}'
+    block_start: '{{ item[''block_start''] }}'
+    block_end: '{{ item[''block_end''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.vlan_blocks | default([]) }}'
+  loop_control:
+    label: '{{ item[''pool''] }}'
+  register: aci_step
+  no_log: true
+- name: Record vlan_blocks results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: vlan_blocks
+- name: Assert no drift in vlan blocks
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in vlan_blocks; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure domains
+  cisco.aci.aci_domain:
+    domain: '{{ item[''domain''] }}'
+    domain_type: '{{ item[''domain_type''] }}'
+    state: present
+  loop: '{{ aci_model.domains | default([]) }}'
+  loop_control:
+    label: '{{ item[''domain''] }}'
+  register: aci_step
+  no_log: true
+- name: Record domains results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: domains
+- name: Assert no drift in domains
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in domains; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure domain pools
+  cisco.aci.aci_domain_to_vlan_pool:
+    domain: '{{ item[''domain''] }}'
+    domain_type: '{{ item[''domain_type''] }}'
+    pool: '{{ item[''pool''] }}'
+    pool_allocation_mode: '{{ item[''pool_allocation_mode''] }}'
+    state: present
+  loop: '{{ aci_model.domain_pools | default([]) }}'
+  loop_control:
+    label: '{{ item[''domain''] }}'
+  register: aci_step
+  no_log: true
+- name: Record domain_pools results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: domain_pools
+- name: Assert no drift in domain pools
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in domain_pools; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure aeps
+  cisco.aci.aci_aep:
+    aep: '{{ item[''aep''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.aeps | default([]) }}'
+  loop_control:
+    label: '{{ item[''aep''] }}'
+  register: aci_step
+  no_log: true
+- name: Record aeps results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: aeps
+- name: Assert no drift in aeps
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in aeps; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure aep domains
+  cisco.aci.aci_aep_to_domain:
+    aep: '{{ item[''aep''] }}'
+    domain: '{{ item[''domain''] }}'
+    domain_type: '{{ item[''domain_type''] }}'
+    state: present
+  loop: '{{ aci_model.aep_domains | default([]) }}'
+  loop_control:
+    label: '{{ item[''aep''] }}'
+  register: aci_step
+  no_log: true
+- name: Record aep_domains results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: aep_domains
+- name: Assert no drift in aep domains
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in aep_domains; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure lldp policies
+  cisco.aci.aci_interface_policy_lldp:
+    lldp_policy: '{{ item[''lldp_policy''] }}'
+    receive_state: '{{ item[''receive_state''] }}'
+    transmit_state: '{{ item[''transmit_state''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.lldp_policies | default([]) }}'
+  loop_control:
+    label: '{{ item[''lldp_policy''] }}'
+  register: aci_step
+  no_log: true
+- name: Record lldp_policies results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: lldp_policies
+- name: Assert no drift in lldp policies
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in lldp_policies; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure cdp policies
+  cisco.aci.aci_interface_policy_cdp:
+    cdp_policy: '{{ item[''cdp_policy''] }}'
+    admin_state: '{{ item[''admin_state''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.cdp_policies | default([]) }}'
+  loop_control:
+    label: '{{ item[''cdp_policy''] }}'
+  register: aci_step
+  no_log: true
+- name: Record cdp_policies results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: cdp_policies
+- name: Assert no drift in cdp policies
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in cdp_policies; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure link policies
+  cisco.aci.aci_interface_policy_link_level:
+    link_level_policy: '{{ item[''link_level_policy''] }}'
+    speed: '{{ item[''speed''] }}'
+    auto_negotiation: '{{ item[''auto_negotiation''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.link_policies | default([]) }}'
+  loop_control:
+    label: '{{ item[''link_level_policy''] }}'
+  register: aci_step
+  no_log: true
+- name: Record link_policies results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: link_policies
+- name: Assert no drift in link policies
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in link_policies; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure access policy groups
+  cisco.aci.aci_interface_policy_leaf_policy_group:
+    policy_group: '{{ item[''policy_group''] }}'
+    lag_type: '{{ item[''lag_type''] }}'
+    aep: '{{ item[''aep''] }}'
+    link_level_policy: '{{ item[''link_level_policy''] }}'
+    lldp_policy: '{{ item[''lldp_policy''] }}'
+    cdp_policy: '{{ item[''cdp_policy''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.access_policy_groups | default([]) }}'
+  loop_control:
+    label: '{{ item[''policy_group''] }}'
+  register: aci_step
+  no_log: true
+- name: Record access_policy_groups results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: access_policy_groups
+- name: Assert no drift in access policy groups
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in access_policy_groups; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure interface profiles
+  cisco.aci.aci_interface_policy_leaf_profile:
+    interface_profile: '{{ item[''interface_profile''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.interface_profiles | default([]) }}'
+  loop_control:
+    label: '{{ item[''interface_profile''] }}'
+  register: aci_step
+  no_log: true
+- name: Record interface_profiles results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: interface_profiles
+- name: Assert no drift in interface profiles
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in interface_profiles; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure access ports
+  cisco.aci.aci_access_port_to_interface_policy_leaf_profile:
+    interface_profile: '{{ item[''interface_profile''] }}'
+    access_port_selector: '{{ item[''access_port_selector''] }}'
+    policy_group: '{{ item[''policy_group''] }}'
+    interface_type: '{{ item[''interface_type''] }}'
+    port_blk: '{{ item[''port_blk''] }}'
+    from_card: '{{ item[''from_card''] }}'
+    to_card: '{{ item[''to_card''] }}'
+    from_port: '{{ item[''from_port''] }}'
+    to_port: '{{ item[''to_port''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.access_ports | default([]) }}'
+  loop_control:
+    label: '{{ item[''interface_profile''] }}'
+  register: aci_step
+  no_log: true
+- name: Record access_ports results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: access_ports
+- name: Assert no drift in access ports
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in access_ports; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure leaf profiles
+  cisco.aci.aci_switch_policy_leaf_profile:
+    leaf_profile: '{{ item[''leaf_profile''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.leaf_profiles | default([]) }}'
+  loop_control:
+    label: '{{ item[''leaf_profile''] }}'
+  register: aci_step
+  no_log: true
+- name: Record leaf_profiles results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: leaf_profiles
+- name: Assert no drift in leaf profiles
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in leaf_profiles; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure leaf selectors
+  cisco.aci.aci_switch_leaf_selector:
+    leaf_profile: '{{ item[''leaf_profile''] }}'
+    leaf: '{{ item[''leaf''] }}'
+    leaf_node_blk: '{{ item[''leaf_node_blk''] }}'
+    from: '{{ item[''from''] }}'
+    to: '{{ item[''to''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.leaf_selectors | default([]) }}'
+  loop_control:
+    label: '{{ item[''leaf_profile''] }}'
+  register: aci_step
+  no_log: true
+- name: Record leaf_selectors results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: leaf_selectors
+- name: Assert no drift in leaf selectors
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in leaf_selectors; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure leaf interfaces
+  cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile:
+    leaf_profile: '{{ item[''leaf_profile''] }}'
+    interface_selector: '{{ item[''interface_selector''] }}'
+    state: present
+  loop: '{{ aci_model.leaf_interfaces | default([]) }}'
+  loop_control:
+    label: '{{ item[''leaf_profile''] }}'
+  register: aci_step
+  no_log: true
+- name: Record leaf_interfaces results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: leaf_interfaces
+- name: Assert no drift in leaf interfaces
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in leaf_interfaces; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool

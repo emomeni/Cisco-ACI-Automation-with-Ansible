@@ -1,0 +1,55 @@
+---
+- name: Ensure epg domains
+  cisco.aci.aci_epg_to_domain:
+    tenant: '{{ item[''tenant''] }}'
+    ap: '{{ item[''ap''] }}'
+    epg: '{{ item[''epg''] }}'
+    domain: '{{ item[''domain''] }}'
+    domain_type: '{{ item[''domain_type''] }}'
+    deploy_immediacy: '{{ item[''deploy_immediacy''] }}'
+    resolution_immediacy: '{{ item[''resolution_immediacy''] }}'
+    state: present
+  loop: '{{ aci_model.epg_domains | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record epg_domains results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: epg_domains
+- name: Assert no drift in epg domains
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in epg_domains; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure static bindings
+  cisco.aci.aci_static_binding_to_epg:
+    tenant: '{{ item[''tenant''] }}'
+    ap: '{{ item[''ap''] }}'
+    epg: '{{ item[''epg''] }}'
+    pod_id: '{{ item[''pod_id''] }}'
+    leafs: '{{ item[''leafs''] }}'
+    interface: '{{ item[''interface''] }}'
+    interface_type: '{{ item[''interface_type''] }}'
+    encap_id: '{{ item[''encap_id''] }}'
+    interface_mode: '{{ item[''interface_mode''] }}'
+    deploy_immediacy: '{{ item[''deploy_immediacy''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.static_bindings | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record static_bindings results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: static_bindings
+- name: Assert no drift in static bindings
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in static_bindings; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool

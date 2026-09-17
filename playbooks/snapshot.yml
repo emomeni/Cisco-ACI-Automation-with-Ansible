@@ -1,0 +1,27 @@
+---
+- hosts: apic
+  connection: local
+  gather_facts: false
+  any_errors_fatal: true
+  module_defaults:
+    group/cisco.aci.all:
+      host: '{{ aci_host }}'
+      username: '{{ lookup(''ansible.builtin.env'', ''ACI_USERNAME'') }}'
+      password: '{{ lookup(''ansible.builtin.env'', ''ACI_PASSWORD'') | default(omit, true) }}'
+      private_key: '{{ lookup(''ansible.builtin.env'', ''ACI_PRIVATE_KEY'') | default(omit, true) }}'
+      certificate_name: '{{ lookup(''ansible.builtin.env'', ''ACI_CERTIFICATE_NAME'') | default(omit,
+        true) }}'
+      validate_certs: true
+      use_ssl: true
+      use_proxy: false
+      timeout: 60
+      output_level: normal
+      suppress_previous: false
+      suppress_verification: false
+  name: Read-only configuration capture
+  check_mode: false
+  tasks:
+    - name: Validate snapshot target
+      ansible.builtin.import_tasks: tasks/preflight.yml
+    - name: Capture selected configuration
+      ansible.builtin.import_tasks: tasks/snapshot.yml

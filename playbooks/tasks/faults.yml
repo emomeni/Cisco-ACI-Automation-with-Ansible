@@ -1,0 +1,16 @@
+---
+- name: Read active critical and major tenant faults
+  cisco.aci.aci_rest:
+    path: /api/mo/uni/tn-{{ item.tenant }}.json?query-target=subtree&target-subtree-class=faultInst&query-target-filter=or(eq(faultInst.severity,"critical"),eq(faultInst.severity,"major"))
+    method: get
+  loop: '{{ aci_model.tenants }}'
+  register: aci_fault_results
+  check_mode: false
+  no_log: true
+- name: Require managed tenants to be free of critical and major faults
+  ansible.builtin.assert:
+    that:
+      - item.imdata | default([]) | length == 0
+    fail_msg: Critical or major tenant faults exist. Inspect APIC and the operations runbook.
+  loop: '{{ aci_fault_results.results }}'
+  no_log: true

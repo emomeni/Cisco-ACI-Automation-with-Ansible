@@ -1,0 +1,18 @@
+---
+extends: default
+rules:
+  line-length:
+    max: 240
+  truthy:
+    allowed-values:
+      - 'true'
+      - 'false'
+      - 'on'
+    check-keys: false
+ignore: '.ansible/
+
+  .venv/
+
+  artifacts/
+
+  '

@@ -1,0 +1,142 @@
+---
+- name: Ensure filters
+  cisco.aci.aci_filter:
+    tenant: '{{ item[''tenant''] }}'
+    filter: '{{ item[''filter''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.filters | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record filters results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: filters
+- name: Assert no drift in filters
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in filters; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure filter entries
+  cisco.aci.aci_filter_entry:
+    tenant: '{{ item[''tenant''] }}'
+    filter: '{{ item[''filter''] }}'
+    entry: '{{ item[''entry''] }}'
+    ether_type: '{{ item[''ether_type''] }}'
+    ip_protocol: '{{ item[''ip_protocol''] }}'
+    destination_port_start: '{{ item[''destination_port_start''] }}'
+    destination_port_end: '{{ item[''destination_port_end''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    stateful: '{{ item[''stateful''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.filter_entries | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record filter_entries results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: filter_entries
+- name: Assert no drift in filter entries
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in filter_entries; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure contracts
+  cisco.aci.aci_contract:
+    tenant: '{{ item[''tenant''] }}'
+    contract: '{{ item[''contract''] }}'
+    scope: '{{ item[''scope''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.contracts | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record contracts results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: contracts
+- name: Assert no drift in contracts
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in contracts; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure subjects
+  cisco.aci.aci_contract_subject:
+    tenant: '{{ item[''tenant''] }}'
+    contract: '{{ item[''contract''] }}'
+    subject: '{{ item[''subject''] }}'
+    apply_both_direction: '{{ item[''apply_both_direction''] }}'
+    reverse_filter: '{{ item[''reverse_filter''] }}'
+    description: '{{ item[''description''] | default(omit) }}'
+    state: present
+  loop: '{{ aci_model.subjects | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record subjects results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: subjects
+- name: Assert no drift in subjects
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in subjects; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure subject filters
+  cisco.aci.aci_contract_subject_to_filter:
+    tenant: '{{ item[''tenant''] }}'
+    contract: '{{ item[''contract''] }}'
+    subject: '{{ item[''subject''] }}'
+    filter: '{{ item[''filter''] }}'
+    direction: '{{ item[''direction''] }}'
+    action: '{{ item[''action''] }}'
+    state: present
+  loop: '{{ aci_model.subject_filters | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record subject_filters results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: subject_filters
+- name: Assert no drift in subject filters
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in subject_filters; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool
+- name: Ensure epg contracts
+  cisco.aci.aci_epg_to_contract:
+    tenant: '{{ item[''tenant''] }}'
+    ap: '{{ item[''ap''] }}'
+    epg: '{{ item[''epg''] }}'
+    contract: '{{ item[''contract''] }}'
+    contract_type: '{{ item[''contract_type''] }}'
+    state: present
+  loop: '{{ aci_model.epg_contracts | default([]) }}'
+  loop_control:
+    label: '{{ item[''tenant''] }}'
+  register: aci_step
+  no_log: true
+- name: Record epg_contracts results privately
+  ansible.builtin.include_tasks: '{{ playbook_dir }}/tasks/report.yml'
+  vars:
+    aci_report_section: epg_contracts
+- name: Assert no drift in epg contracts
+  ansible.builtin.assert:
+    that:
+      - not aci_step.changed
+    fail_msg: Drift detected in epg_contracts; run the plan and inspect APIC.
+  when: aci_verify | default(false) | bool

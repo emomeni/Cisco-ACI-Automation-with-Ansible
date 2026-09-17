@@ -1,0 +1,6 @@
+---
+- name: Check managed settings for drift and inspect faults
+  ansible.builtin.import_playbook: site.yml
+  vars:
+    aci_apply: false
+    aci_verify: true

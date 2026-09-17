@@ -1,0 +1,69 @@
+---
+- name: Require one APIC endpoint and a model file
+  ansible.builtin.assert:
+    that:
+      - ansible_play_hosts_all | length == 1
+      - aci_host is defined
+      - aci_environment is defined
+      - aci_model_file is defined
+    fail_msg: Select exactly one APIC endpoint per fabric and specify its model.
+- name: Load and strictly validate intent locally
+  ansible.builtin.set_fact:
+    aci_model: '{{ lookup(''ansible.builtin.file'', aci_model_file) | aci_load_model }}'
+  no_log: true
+- name: Check target and operation boundaries
+  ansible.builtin.assert:
+    that:
+      - aci_model.target.apic_host == aci_host
+      - aci_model.target.environment == aci_environment
+      - not ((aci_apply | default(false) | bool) and (aci_verify | default(false) | bool))
+      - not (aci_apply | default(false) | bool) or (aci_change_id | default('') | length > 0)
+      - not (aci_apply | default(false) | bool) or (aci_recovery_reference | default('') | length > 0)
+    fail_msg: Target mismatch, conflicting mode, or missing change/recovery reference. See RUNBOOK.md.
+- name: Require exactly one authentication method
+  ansible.builtin.assert:
+    that:
+      - lookup('ansible.builtin.env', 'ACI_USERNAME') | length > 0
+      - (lookup('ansible.builtin.env', 'ACI_PASSWORD') | length > 0) != (lookup('ansible.builtin.env',
+        'ACI_PRIVATE_KEY') | length > 0)
+      - lookup('ansible.builtin.env', 'ACI_PRIVATE_KEY') | length == 0 or lookup('ansible.builtin.env',
+        'ACI_CERTIFICATE_NAME') | length > 0
+  no_log: true
+- name: Read APIC controller firmware versions
+  cisco.aci.aci_rest:
+    path: /api/node/class/firmwareCtrlrRunning.json
+    method: get
+  check_mode: false
+  register: aci_firmware
+  no_log: true
+- name: Require APIC firmware records
+  ansible.builtin.assert:
+    that:
+      - aci_firmware.imdata | default([]) | length > 0
+    fail_msg: APIC returned no controller firmware records; check RBAC and endpoint.
+- name: Check every controller version against the explicit allowlist
+  ansible.builtin.assert:
+    that:
+      - item.firmwareCtrlrRunning.attributes.version in aci_model.target.apic_versions
+    fail_msg: An APIC controller version is outside the model allowlist.
+  loop: '{{ aci_firmware.imdata }}'
+  no_log: true
+- name: Create a private artifact directory
+  ansible.builtin.file:
+    path: '{{ aci_artifact_directory | default(playbook_dir + ''/../artifacts'') }}'
+    state: directory
+    mode: '0700'
+  check_mode: false
+- name: Allocate a unique private run directory
+  ansible.builtin.tempfile:
+    state: directory
+    prefix: aci-run-
+    path: '{{ aci_artifact_directory | default(playbook_dir + ''/../artifacts'') }}'
+  register: aci_run_dir
+  check_mode: false
+- name: Initialize the change report
+  ansible.builtin.set_fact:
+    aci_report: []
+- name: Report the private audit directory
+  ansible.builtin.debug:
+    msg: 'Private report directory: {{ aci_run_dir.path }}'

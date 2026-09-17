@@ -1,0 +1,37 @@
+---
+- name: Create private artifact directory
+  ansible.builtin.file:
+    path: '{{ aci_artifact_directory | default(playbook_dir + ''/../artifacts'') }}'
+    state: directory
+    mode: '0700'
+  check_mode: false
+- name: Allocate a private snapshot directory
+  ansible.builtin.tempfile:
+    state: directory
+    prefix: aci-snapshot-
+    path: '{{ aci_artifact_directory | default(playbook_dir + ''/../artifacts'') }}'
+  register: aci_snapshot_dir
+  check_mode: false
+- name: Build explicit managed capture paths
+  ansible.builtin.set_fact:
+    aci_snapshot_paths: '{{ aci_model | aci_snapshot_paths }}'
+- name: Read configuration snapshots
+  cisco.aci.aci_rest:
+    path: '{{ item }}'
+    method: get
+  loop: '{{ aci_snapshot_paths }}'
+  register: aci_snapshots
+  check_mode: false
+  no_log: true
+- name: Write protected snapshot and change metadata
+  ansible.builtin.copy:
+    content: '{{ {''target'': aci_model.target, ''change_id'': aci_change_id | default(''read-only''),
+      ''recovery_reference'': aci_recovery_reference | default(''not supplied''), ''responses'': aci_snapshots.results
+      | aci_snapshot_data} | to_nice_json }}'
+    dest: '{{ aci_snapshot_dir.path }}/snapshot.json'
+    mode: '0600'
+  check_mode: false
+  no_log: true
+- name: Report snapshot location
+  ansible.builtin.debug:
+    msg: 'Configuration capture: {{ aci_snapshot_dir.path }}/snapshot.json'

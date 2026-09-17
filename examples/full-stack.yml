@@ -1,0 +1,252 @@
+---
+schema_version: 1
+target:
+  environment: lab
+  apic_host: apic.lab.example.com
+  apic_versions:
+    - 6.1(4a)
+tenants:
+  - tenant: LAB_APP
+    description: Example application tenant; replace for your fabric
+vlan_pools:
+  - pool: LAB_STATIC
+    pool_allocation_mode: static
+vlan_blocks:
+  - pool: LAB_STATIC
+    pool_allocation_mode: static
+    block_start: 110
+    block_end: 119
+domains:
+  - domain: LAB_PHYS
+    domain_type: phys
+  - domain: LAB_L3
+    domain_type: l3dom
+domain_pools:
+  - domain: LAB_PHYS
+    domain_type: phys
+    pool: LAB_STATIC
+    pool_allocation_mode: static
+  - domain: LAB_L3
+    domain_type: l3dom
+    pool: LAB_STATIC
+    pool_allocation_mode: static
+aeps:
+  - aep: LAB_AEP
+aep_domains:
+  - aep: LAB_AEP
+    domain: LAB_PHYS
+    domain_type: phys
+  - aep: LAB_AEP
+    domain: LAB_L3
+    domain_type: l3dom
+lldp_policies:
+  - lldp_policy: LAB_LLDP
+    receive_state: true
+    transmit_state: true
+cdp_policies:
+  - cdp_policy: LAB_CDP
+    admin_state: false
+link_policies:
+  - link_level_policy: LAB_AUTO
+    speed: inherit
+    auto_negotiation: true
+access_policy_groups:
+  - policy_group: LAB_ACCESS
+    lag_type: leaf
+    aep: LAB_AEP
+    link_level_policy: LAB_AUTO
+    lldp_policy: LAB_LLDP
+    cdp_policy: LAB_CDP
+interface_profiles:
+  - interface_profile: LAB_LEAF101_IF
+access_ports:
+  - interface_profile: LAB_LEAF101_IF
+    access_port_selector: HOST
+    policy_group: LAB_ACCESS
+    interface_type: switch_port
+    port_blk: ports
+    from_card: '1'
+    to_card: '1'
+    from_port: '10'
+    to_port: '10'
+  - interface_profile: LAB_LEAF101_IF
+    access_port_selector: UPLINK
+    policy_group: LAB_ACCESS
+    interface_type: switch_port
+    port_blk: ports
+    from_card: '1'
+    to_card: '1'
+    from_port: '48'
+    to_port: '48'
+leaf_profiles:
+  - leaf_profile: LAB_LEAF101
+leaf_selectors:
+  - leaf_profile: LAB_LEAF101
+    leaf: LEAF101
+    leaf_node_blk: nodes
+    from: 101
+    to: 101
+leaf_interfaces:
+  - leaf_profile: LAB_LEAF101
+    interface_selector: LAB_LEAF101_IF
+vrfs:
+  - tenant: LAB_APP
+    vrf: APP_VRF
+    policy_control_preference: enforced
+    policy_control_direction: ingress
+bridge_domains:
+  - tenant: LAB_APP
+    bd: WEB_BD
+    vrf: APP_VRF
+    enable_routing: true
+    arp_flooding: false
+    l2_unknown_unicast: proxy
+    limit_ip_learn: true
+subnets:
+  - tenant: LAB_APP
+    bd: WEB_BD
+    gateway: 10.20.110.1
+    mask: 24
+    scope:
+      - public
+applications:
+  - tenant: LAB_APP
+    ap: APP
+epgs:
+  - tenant: LAB_APP
+    ap: APP
+    epg: WEB
+    bd: WEB_BD
+    intra_epg_isolation: unenforced
+    preferred_group: false
+filters:
+  - tenant: LAB_APP
+    filter: HTTPS
+filter_entries:
+  - tenant: LAB_APP
+    filter: HTTPS
+    entry: TCP443
+    ether_type: ip
+    ip_protocol: tcp
+    destination_port_start: '443'
+    destination_port_end: '443'
+    stateful: false
+contracts:
+  - tenant: LAB_APP
+    contract: HTTPS
+    scope: context
+subjects:
+  - tenant: LAB_APP
+    contract: HTTPS
+    subject: HTTPS
+    apply_both_direction: both
+    reverse_filter: true
+subject_filters:
+  - tenant: LAB_APP
+    contract: HTTPS
+    subject: HTTPS
+    filter: HTTPS
+    direction: both
+    action: permit
+epg_contracts:
+  - tenant: LAB_APP
+    ap: APP
+    epg: WEB
+    contract: HTTPS
+    contract_type: provider
+l3outs:
+  - tenant: LAB_APP
+    l3out: WAN
+    vrf: APP_VRF
+    domain: LAB_L3
+    l3protocol:
+      - static
+    route_control:
+      - export
+l3out_node_profiles:
+  - tenant: LAB_APP
+    l3out: WAN
+    node_profile: BORDER
+l3out_nodes:
+  - tenant: LAB_APP
+    l3out: WAN
+    node_profile: BORDER
+    pod_id: 1
+    node_id: 101
+    router_id: 192.0.2.101
+    router_id_as_loopback: 'no'
+l3out_interface_profiles:
+  - tenant: LAB_APP
+    l3out: WAN
+    node_profile: BORDER
+    interface_profile: UPLINK
+l3out_interfaces:
+  - tenant: LAB_APP
+    l3out: WAN
+    node_profile: BORDER
+    interface_profile: UPLINK
+    pod_id: '1'
+    node_id: '101'
+    path_ep: eth1/48
+    address: 192.0.2.2/30
+    interface_type: l3-port
+    mtu: '1500'
+static_routes:
+  - tenant: LAB_APP
+    l3out: WAN
+    logical_node: BORDER
+    pod_id: 1
+    node_id: 101
+    prefix: 0.0.0.0/0
+    preference: 1
+static_nexthops:
+  - tenant: LAB_APP
+    l3out: WAN
+    node_profile: BORDER
+    pod_id: 1
+    node_id: 101
+    prefix: 0.0.0.0/0
+    nexthop: 192.0.2.1
+    preference: 1
+external_epgs:
+  - tenant: LAB_APP
+    l3out: WAN
+    extepg: WAN_CLIENTS
+    preferred_group: false
+external_subnets:
+  - tenant: LAB_APP
+    l3out: WAN
+    extepg: WAN_CLIENTS
+    network: 198.51.100.0/24
+    scope:
+      - import-security
+external_contracts:
+  - tenant: LAB_APP
+    l3out: WAN
+    extepg: WAN_CLIENTS
+    contract: HTTPS
+    contract_type: consumer
+bd_l3outs:
+  - tenant: LAB_APP
+    bd: WEB_BD
+    l3out: WAN
+epg_domains:
+  - tenant: LAB_APP
+    ap: APP
+    epg: WEB
+    domain: LAB_PHYS
+    domain_type: phys
+    deploy_immediacy: lazy
+    resolution_immediacy: pre-provision
+static_bindings:
+  - tenant: LAB_APP
+    ap: APP
+    epg: WEB
+    pod_id: 1
+    leafs:
+      - '101'
+    interface: 1/10
+    interface_type: switch_port
+    encap_id: 110
+    interface_mode: regular
+    deploy_immediacy: lazy

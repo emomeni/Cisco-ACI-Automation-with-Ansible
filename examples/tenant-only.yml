@@ -1,0 +1,75 @@
+---
+schema_version: 1
+target:
+  environment: lab
+  apic_host: apic.lab.example.com
+  apic_versions:
+    - 6.1(4a)
+tenants:
+  - tenant: LAB_APP
+    description: Example application tenant; replace for your fabric
+vrfs:
+  - tenant: LAB_APP
+    vrf: APP_VRF
+    policy_control_preference: enforced
+    policy_control_direction: ingress
+bridge_domains:
+  - tenant: LAB_APP
+    bd: WEB_BD
+    vrf: APP_VRF
+    enable_routing: true
+    arp_flooding: false
+    l2_unknown_unicast: proxy
+    limit_ip_learn: true
+subnets:
+  - tenant: LAB_APP
+    bd: WEB_BD
+    gateway: 10.20.110.1
+    mask: 24
+    scope:
+      - private
+applications:
+  - tenant: LAB_APP
+    ap: APP
+epgs:
+  - tenant: LAB_APP
+    ap: APP
+    epg: WEB
+    bd: WEB_BD
+    intra_epg_isolation: unenforced
+    preferred_group: false
+filters:
+  - tenant: LAB_APP
+    filter: HTTPS
+filter_entries:
+  - tenant: LAB_APP
+    filter: HTTPS
+    entry: TCP443
+    ether_type: ip
+    ip_protocol: tcp
+    destination_port_start: '443'
+    destination_port_end: '443'
+    stateful: false
+contracts:
+  - tenant: LAB_APP
+    contract: HTTPS
+    scope: context
+subjects:
+  - tenant: LAB_APP
+    contract: HTTPS
+    subject: HTTPS
+    apply_both_direction: both
+    reverse_filter: true
+subject_filters:
+  - tenant: LAB_APP
+    contract: HTTPS
+    subject: HTTPS
+    filter: HTTPS
+    direction: both
+    action: permit
+epg_contracts:
+  - tenant: LAB_APP
+    ap: APP
+    epg: WEB
+    contract: HTTPS
+    contract_type: provider

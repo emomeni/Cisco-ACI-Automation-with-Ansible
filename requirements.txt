@@ -1,0 +1,4 @@
+ansible-core==2.20.9
+PyYAML==6.0.3
+jsonschema==4.26.0
+cryptography==46.0.5

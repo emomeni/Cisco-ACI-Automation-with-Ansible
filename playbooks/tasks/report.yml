@@ -1,0 +1,15 @@
+---
+- name: Collect allowlisted change details
+  ansible.builtin.set_fact:
+    aci_report: '{{ aci_report + (aci_step.results | default([]) | aci_report_data(aci_report_section))
+      }}'
+  no_log: true
+- name: Save incremental private change report
+  ansible.builtin.copy:
+    content: '{{ {''target'': aci_model.target, ''apply_requested'': aci_apply | default(false) | bool,
+      ''cli_check_mode'': ansible_check_mode, ''change_id'': aci_change_id | default(''''), ''objects'':
+      aci_report} | to_nice_json }}'
+    dest: '{{ aci_run_dir.path }}/report.json'
+    mode: '0600'
+  check_mode: false
+  no_log: true

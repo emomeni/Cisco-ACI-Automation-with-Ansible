@@ -1,0 +1,613 @@
+{
+  "tenants": {
+    "module": "cisco.aci.aci_tenant",
+    "identity": [
+      "tenant"
+    ],
+    "parameters": [
+      "tenant",
+      "description"
+    ]
+  },
+  "vlan_pools": {
+    "module": "cisco.aci.aci_vlan_pool",
+    "identity": [
+      "pool",
+      "pool_allocation_mode"
+    ],
+    "parameters": [
+      "pool",
+      "pool_allocation_mode",
+      "description"
+    ]
+  },
+  "vlan_blocks": {
+    "module": "cisco.aci.aci_vlan_pool_encap_block",
+    "identity": [
+      "pool",
+      "pool_allocation_mode",
+      "block_start",
+      "block_end"
+    ],
+    "parameters": [
+      "pool",
+      "pool_allocation_mode",
+      "block_start",
+      "block_end",
+      "description"
+    ]
+  },
+  "domains": {
+    "module": "cisco.aci.aci_domain",
+    "identity": [
+      "domain",
+      "domain_type"
+    ],
+    "parameters": [
+      "domain",
+      "domain_type"
+    ]
+  },
+  "domain_pools": {
+    "module": "cisco.aci.aci_domain_to_vlan_pool",
+    "identity": [
+      "domain",
+      "domain_type"
+    ],
+    "parameters": [
+      "domain",
+      "domain_type",
+      "pool",
+      "pool_allocation_mode"
+    ]
+  },
+  "aeps": {
+    "module": "cisco.aci.aci_aep",
+    "identity": [
+      "aep"
+    ],
+    "parameters": [
+      "aep",
+      "description"
+    ]
+  },
+  "aep_domains": {
+    "module": "cisco.aci.aci_aep_to_domain",
+    "identity": [
+      "aep",
+      "domain",
+      "domain_type"
+    ],
+    "parameters": [
+      "aep",
+      "domain",
+      "domain_type"
+    ]
+  },
+  "lldp_policies": {
+    "module": "cisco.aci.aci_interface_policy_lldp",
+    "identity": [
+      "lldp_policy"
+    ],
+    "parameters": [
+      "lldp_policy",
+      "receive_state",
+      "transmit_state",
+      "description"
+    ]
+  },
+  "cdp_policies": {
+    "module": "cisco.aci.aci_interface_policy_cdp",
+    "identity": [
+      "cdp_policy"
+    ],
+    "parameters": [
+      "cdp_policy",
+      "admin_state",
+      "description"
+    ]
+  },
+  "link_policies": {
+    "module": "cisco.aci.aci_interface_policy_link_level",
+    "identity": [
+      "link_level_policy"
+    ],
+    "parameters": [
+      "link_level_policy",
+      "speed",
+      "auto_negotiation",
+      "description"
+    ]
+  },
+  "access_policy_groups": {
+    "module": "cisco.aci.aci_interface_policy_leaf_policy_group",
+    "identity": [
+      "policy_group"
+    ],
+    "parameters": [
+      "policy_group",
+      "lag_type",
+      "aep",
+      "link_level_policy",
+      "lldp_policy",
+      "cdp_policy",
+      "description"
+    ]
+  },
+  "interface_profiles": {
+    "module": "cisco.aci.aci_interface_policy_leaf_profile",
+    "identity": [
+      "interface_profile"
+    ],
+    "parameters": [
+      "interface_profile",
+      "description"
+    ]
+  },
+  "access_ports": {
+    "module": "cisco.aci.aci_access_port_to_interface_policy_leaf_profile",
+    "identity": [
+      "interface_profile",
+      "access_port_selector"
+    ],
+    "parameters": [
+      "interface_profile",
+      "access_port_selector",
+      "policy_group",
+      "interface_type",
+      "port_blk",
+      "from_card",
+      "to_card",
+      "from_port",
+      "to_port",
+      "description"
+    ]
+  },
+  "leaf_profiles": {
+    "module": "cisco.aci.aci_switch_policy_leaf_profile",
+    "identity": [
+      "leaf_profile"
+    ],
+    "parameters": [
+      "leaf_profile",
+      "description"
+    ]
+  },
+  "leaf_selectors": {
+    "module": "cisco.aci.aci_switch_leaf_selector",
+    "identity": [
+      "leaf_profile",
+      "leaf"
+    ],
+    "parameters": [
+      "leaf_profile",
+      "leaf",
+      "leaf_node_blk",
+      "from",
+      "to",
+      "description"
+    ]
+  },
+  "leaf_interfaces": {
+    "module": "cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile",
+    "identity": [
+      "leaf_profile",
+      "interface_selector"
+    ],
+    "parameters": [
+      "leaf_profile",
+      "interface_selector"
+    ]
+  },
+  "vrfs": {
+    "module": "cisco.aci.aci_vrf",
+    "identity": [
+      "tenant",
+      "vrf"
+    ],
+    "parameters": [
+      "tenant",
+      "vrf",
+      "policy_control_preference",
+      "policy_control_direction",
+      "description"
+    ]
+  },
+  "bridge_domains": {
+    "module": "cisco.aci.aci_bd",
+    "identity": [
+      "tenant",
+      "bd"
+    ],
+    "parameters": [
+      "tenant",
+      "bd",
+      "vrf",
+      "enable_routing",
+      "arp_flooding",
+      "l2_unknown_unicast",
+      "limit_ip_learn",
+      "description",
+      "ip_learning"
+    ]
+  },
+  "subnets": {
+    "module": "cisco.aci.aci_bd_subnet",
+    "identity": [
+      "tenant",
+      "bd",
+      "gateway",
+      "mask"
+    ],
+    "parameters": [
+      "tenant",
+      "bd",
+      "gateway",
+      "mask",
+      "scope",
+      "description",
+      "preferred"
+    ]
+  },
+  "applications": {
+    "module": "cisco.aci.aci_ap",
+    "identity": [
+      "tenant",
+      "ap"
+    ],
+    "parameters": [
+      "tenant",
+      "ap",
+      "description"
+    ]
+  },
+  "epgs": {
+    "module": "cisco.aci.aci_epg",
+    "identity": [
+      "tenant",
+      "ap",
+      "epg"
+    ],
+    "parameters": [
+      "tenant",
+      "ap",
+      "epg",
+      "bd",
+      "intra_epg_isolation",
+      "preferred_group",
+      "description"
+    ]
+  },
+  "filters": {
+    "module": "cisco.aci.aci_filter",
+    "identity": [
+      "tenant",
+      "filter"
+    ],
+    "parameters": [
+      "tenant",
+      "filter",
+      "description"
+    ]
+  },
+  "filter_entries": {
+    "module": "cisco.aci.aci_filter_entry",
+    "identity": [
+      "tenant",
+      "filter",
+      "entry"
+    ],
+    "parameters": [
+      "tenant",
+      "filter",
+      "entry",
+      "ether_type",
+      "ip_protocol",
+      "destination_port_start",
+      "destination_port_end",
+      "description",
+      "stateful"
+    ]
+  },
+  "contracts": {
+    "module": "cisco.aci.aci_contract",
+    "identity": [
+      "tenant",
+      "contract"
+    ],
+    "parameters": [
+      "tenant",
+      "contract",
+      "scope",
+      "description"
+    ]
+  },
+  "subjects": {
+    "module": "cisco.aci.aci_contract_subject",
+    "identity": [
+      "tenant",
+      "contract",
+      "subject"
+    ],
+    "parameters": [
+      "tenant",
+      "contract",
+      "subject",
+      "apply_both_direction",
+      "reverse_filter",
+      "description"
+    ]
+  },
+  "subject_filters": {
+    "module": "cisco.aci.aci_contract_subject_to_filter",
+    "identity": [
+      "tenant",
+      "contract",
+      "subject",
+      "filter",
+      "direction"
+    ],
+    "parameters": [
+      "tenant",
+      "contract",
+      "subject",
+      "filter",
+      "direction",
+      "action"
+    ]
+  },
+  "epg_contracts": {
+    "module": "cisco.aci.aci_epg_to_contract",
+    "identity": [
+      "tenant",
+      "ap",
+      "epg",
+      "contract",
+      "contract_type"
+    ],
+    "parameters": [
+      "tenant",
+      "ap",
+      "epg",
+      "contract",
+      "contract_type"
+    ]
+  },
+  "l3outs": {
+    "module": "cisco.aci.aci_l3out",
+    "identity": [
+      "tenant",
+      "l3out"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "vrf",
+      "domain",
+      "l3protocol",
+      "route_control",
+      "description"
+    ]
+  },
+  "l3out_node_profiles": {
+    "module": "cisco.aci.aci_l3out_logical_node_profile",
+    "identity": [
+      "tenant",
+      "l3out",
+      "node_profile"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "description"
+    ]
+  },
+  "l3out_nodes": {
+    "module": "cisco.aci.aci_l3out_logical_node",
+    "identity": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "pod_id",
+      "node_id"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "pod_id",
+      "node_id",
+      "router_id",
+      "router_id_as_loopback"
+    ]
+  },
+  "l3out_interface_profiles": {
+    "module": "cisco.aci.aci_l3out_logical_interface_profile",
+    "identity": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "interface_profile"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "interface_profile",
+      "description"
+    ]
+  },
+  "l3out_interfaces": {
+    "module": "cisco.aci.aci_l3out_interface",
+    "identity": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "interface_profile",
+      "pod_id",
+      "node_id",
+      "path_ep"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "interface_profile",
+      "pod_id",
+      "node_id",
+      "path_ep",
+      "address",
+      "interface_type",
+      "mtu",
+      "description"
+    ]
+  },
+  "static_routes": {
+    "module": "cisco.aci.aci_l3out_static_routes",
+    "identity": [
+      "tenant",
+      "l3out",
+      "logical_node",
+      "pod_id",
+      "node_id",
+      "prefix"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "logical_node",
+      "pod_id",
+      "node_id",
+      "prefix",
+      "preference",
+      "description"
+    ]
+  },
+  "static_nexthops": {
+    "module": "cisco.aci.aci_l3out_static_routes_nexthop",
+    "identity": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "pod_id",
+      "node_id",
+      "prefix",
+      "nexthop"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "node_profile",
+      "pod_id",
+      "node_id",
+      "prefix",
+      "nexthop",
+      "preference"
+    ]
+  },
+  "external_epgs": {
+    "module": "cisco.aci.aci_l3out_extepg",
+    "identity": [
+      "tenant",
+      "l3out",
+      "extepg"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "extepg",
+      "preferred_group",
+      "description"
+    ]
+  },
+  "external_subnets": {
+    "module": "cisco.aci.aci_l3out_extsubnet",
+    "identity": [
+      "tenant",
+      "l3out",
+      "extepg",
+      "network"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "extepg",
+      "network",
+      "scope"
+    ]
+  },
+  "external_contracts": {
+    "module": "cisco.aci.aci_l3out_extepg_to_contract",
+    "identity": [
+      "tenant",
+      "l3out",
+      "extepg",
+      "contract",
+      "contract_type"
+    ],
+    "parameters": [
+      "tenant",
+      "l3out",
+      "extepg",
+      "contract",
+      "contract_type"
+    ]
+  },
+  "bd_l3outs": {
+    "module": "cisco.aci.aci_bd_to_l3out",
+    "identity": [
+      "tenant",
+      "bd",
+      "l3out"
+    ],
+    "parameters": [
+      "tenant",
+      "bd",
+      "l3out"
+    ]
+  },
+  "epg_domains": {
+    "module": "cisco.aci.aci_epg_to_domain",
+    "identity": [
+      "tenant",
+      "ap",
+      "epg",
+      "domain",
+      "domain_type"
+    ],
+    "parameters": [
+      "tenant",
+      "ap",
+      "epg",
+      "domain",
+      "domain_type",
+      "deploy_immediacy",
+      "resolution_immediacy"
+    ]
+  },
+  "static_bindings": {
+    "module": "cisco.aci.aci_static_binding_to_epg",
+    "identity": [
+      "tenant",
+      "ap",
+      "epg",
+      "pod_id",
+      "leafs",
+      "interface"
+    ],
+    "parameters": [
+      "tenant",
+      "ap",
+      "epg",
+      "pod_id",
+      "leafs",
+      "interface",
+      "interface_type",
+      "encap_id",
+      "interface_mode",
+      "deploy_immediacy",
+      "description"
+    ]
+  }
+}

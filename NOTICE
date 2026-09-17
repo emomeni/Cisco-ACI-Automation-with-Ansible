@@ -1,0 +1,7 @@
+This independent repository is not endorsed by Cisco or Red Hat.
+Cisco ACI and Ansible are trademarks of their respective owners.
+The original playbooks and supporting code are MIT licensed.
+The separately installed cisco.aci collection and ansible-core have their own
+GPL licenses. They are dependencies, and are not bundled in this repository.
+Parameter names and option values were checked against cisco.aci 2.13.0,
+CiscoDevNet/ansible-aci commit d6a5c3f6f5192023121ecd304ef140a768bfcdc9.

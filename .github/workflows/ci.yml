@@ -1,0 +1,46 @@
+---
+name: Validate
+'on':
+  push:
+    branches:
+      - main
+  pull_request: {}
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements-dev.txt -c constraints.txt
+      - name: Install the pinned ACI collection
+        run: ansible-galaxy collection install -r collections/requirements.yml -p .ansible/collections
+      - name: Check YAML formatting
+        run: yamllint .
+      - name: Validate example intent
+        run: python scripts/validate.py examples/full-stack.yml examples/tenant-only.yml
+      - name: Run behavioral tests
+        run: python -m pytest -q
+      - name: Check collection parameter contracts
+        run: python scripts/check_collection.py
+      - name: Check playbook syntax
+        run: 'ansible-playbook --syntax-check playbooks/site.yml
+
+          ansible-playbook --syntax-check playbooks/verify.yml
+
+          ansible-playbook --syntax-check playbooks/snapshot.yml
+
+          '
