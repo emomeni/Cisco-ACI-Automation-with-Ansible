@@ -1,5 +1,11 @@
 # Cisco ACI Automation with Ansible
 
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/emomeni/Cisco-ACI-Automation-with-Ansible)
+
+[![Run in Cisco Cloud IDE](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-runable-icon.svg)](https://developer.cisco.com/codeexchange/devenv/emomeni/Cisco-ACI-Automation-with-Ansible/)
+
+[![Cisco Developed](https://static.production.devnetcloud.com/codeexchange/assets/images/cisco-developed.svg)](https://developer.cisco.com/codeexchange/github/repo/emomeni/Cisco-ACI-Automation-with-Ansible)
+
 Intent-driven automation framework for deploying, validating, and verifying Cisco ACI configuration through the APIC API using Ansible and the `cisco.aci` collection.
 
 This repository is designed around a simple principle:
